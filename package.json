@@ -1,0 +1,11 @@
+{
+  "name": "maintenance_logging",
+  "version": "1.0.0",
+  "description": "An application to log maintenance activities on machines in different areas of the company",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sinu",
+  "license": "ISC"
+}
