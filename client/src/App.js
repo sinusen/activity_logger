@@ -4,12 +4,12 @@ import Form from "./components/Form";
 
 class App extends React.Component {
   state = { error: false, machinesList: null };
-  fetchMachines = async () => {
+  fetchAreaAndMachines = async () => {
     try {
-      const response = await axios.get("/activity-log/machines");
+      const response = await axios.get("/activity-log/area-and-machines");
       this.setState({
-        error: response.serverError,
-        machinesList: response.data,
+        error: response.data.serverError,
+        machinesList: response.data.data,
       });
     } catch (err) {
       this.setState({ error: true });
@@ -22,7 +22,7 @@ class App extends React.Component {
     }
     return (
       <Form
-        onFormMount={this.fetchMachines}
+        onFormMount={this.fetchAreaAndMachines}
         machinesList={this.state.machinesList}
       />
     );

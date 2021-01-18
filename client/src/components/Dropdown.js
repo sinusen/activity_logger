@@ -1,13 +1,17 @@
 import React from "react";
 
 const Dropdown = ({ label, selected, options, onSelectedChange }) => {
-  const generatedList = options.map((option) => {
-    return (
-      <option key={option.value} value={option.value}>
-        {option.label}
-      </option>
-    );
-  });
+  const generatedList =
+    options.length > 0
+      ? options.map((option) => {
+          console.log(option);
+          return (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          );
+        })
+      : null;
 
   return (
     <div>

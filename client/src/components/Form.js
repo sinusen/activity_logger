@@ -2,26 +2,6 @@ import React from "react";
 import Dropdown from "./Dropdown";
 import moment from "moment";
 
-const areasLogged = [
-  {
-    label: "Production",
-    value: "Production",
-  },
-  {
-    label: "Packing",
-    value: "Packing",
-  },
-];
-const machinesInArea = [
-  {
-    label: "Hugart",
-    value: "Hugart",
-  },
-  {
-    label: "Novapac",
-    value: "Novapac",
-  },
-];
 const getFormattedDate = () => {
   return moment().format("YYYY-MM-DD");
 };
@@ -33,8 +13,8 @@ class Form extends React.Component {
     super(props);
     this.state = {
       maintenanceActivity: "",
-      currentArea: areasLogged[0],
-      currentMachine: machinesInArea[0],
+      currentArea: "",
+      currentMachine: "",
       selectedDate: getFormattedDate(),
       selectedTime: "",
       timeStep: null,
@@ -44,20 +24,36 @@ class Form extends React.Component {
     await this.props.onFormMount();
     this.setState({ timeStep: "900" });
   }
-  handleMaintenanceActivity = (event) => {
-    this.setState({ activity: event.target.value });
+
+  getAreasFromList = () => {
+    if (!this.props.machinesList) {
+      return [];
+    }
+    let areas = [];
+    [
+      ...new Set(this.props.machinesList.map((item) => item.machine_location)),
+    ].forEach((value1, value2, set) => {
+      areas.push({ label: value1, value: value1 });
+    });
+    // if (!this.state.currentArea) {
+    //   this.setState({ currentArea: array[0] });
+    // }
+    return areas;
   };
-  handleAreaSelection = (event) => {
-    this.setState({ currentArea: event.target.value });
+
+  getMachinesFromList = () => {
+    if (!this.props.machinesList) {
+      return [];
+    }
+    return this.props.machinesList
+      .filter((item) => item.machine_location == this.state.currentArea)
+      .map(({ machine_name }) => {
+        return { label: machine_name, value: machine_name };
+      });
   };
-  handleMachineSelection = (event) => {
-    this.setState({ currentMachine: event.target.value });
-  };
-  handleDateChange = (event) => {
-    this.setState({ selectedDate: event.target.value });
-  };
-  handleTimeChange = (event) => {
-    this.setState({ selectedTime: event.target.value });
+
+  handleChange = (event, stateProperty) => {
+    this.setState({ [stateProperty]: event.target.value });
   };
 
   render() {
@@ -69,16 +65,20 @@ class Form extends React.Component {
             <Dropdown
               label="Select an area"
               selected={this.state.currentArea}
-              options={areasLogged}
-              onSelectedChange={this.handleAreaSelection}
+              options={this.getAreasFromList()}
+              onSelectedChange={(event) => {
+                this.handleChange(event, "currentArea");
+              }}
             />
           </div>
           <div className="col-md-6">
             <Dropdown
               label="Select a machine"
               selected={this.state.currentMachine}
-              options={machinesInArea}
-              onSelectedChange={this.handleMachineSelection}
+              options={this.getMachinesFromList()}
+              onSelectedChange={(event) => {
+                this.handleChange(event, "currentMachine");
+              }}
             />
           </div>
           <div className="col-md-6">
@@ -90,7 +90,9 @@ class Form extends React.Component {
               id="datePicker"
               type="date"
               value={this.state.selectedDate}
-              onChange={this.handleDateChange}
+              onChange={(event) => {
+                this.handleChange(event, "selectedDate");
+              }}
             />
           </div>
           <div className="col-md-6">
@@ -103,7 +105,9 @@ class Form extends React.Component {
               type="time"
               step={this.state.timeStep}
               value={this.state.selectedTime}
-              onChange={this.handleTimeChange}
+              onChange={(event) => {
+                this.handleChange(event, "selectedTime");
+              }}
             />
           </div>
           <div className="col-12">
@@ -116,7 +120,9 @@ class Form extends React.Component {
               placeholder="Enter activity"
               style={{ height: "200px" }}
               value={this.state.maintenanceActivity}
-              onChange={this.handleMaintenanceActivity}
+              onChange={(event) => {
+                this.handleChange(event, "maintenanceActivity");
+              }}
             />
           </div>
         </div>
