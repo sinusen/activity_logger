@@ -1,12 +1,33 @@
 {
-  "name": "maintenance_logging",
+  "name": "activity_logger",
   "version": "1.0.0",
   "description": "An application to log maintenance activities on machines in different areas of the company",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "client": "cd client && npm start"
+    "client": "cd client && npm start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "client:build": "cd client && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sinusen/activity_logger.git"
   },
   "author": "Sinu",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sinusen/activity_logger/issues"
+  },
+  "homepage": "https://github.com/sinusen/activity_logger#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "pg": "^8.5.1"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.7"
+  }
 }
