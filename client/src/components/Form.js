@@ -9,6 +9,8 @@ const getFormattedTime = () => {
   return moment().format("LTS");
 };
 class Form extends React.Component {
+  areas = [];
+  machines = [];
   constructor(props) {
     super(props);
     this.state = {
@@ -20,14 +22,11 @@ class Form extends React.Component {
       timeStep: null,
     };
   }
-  async componentDidMount() {
-    await this.props.onFormMount();
-    this.setState({ timeStep: "900" });
-  }
 
   getAreasFromList = () => {
     if (!this.props.machinesList) {
-      return [];
+      this.areas = [];
+      return;
     }
     let areas = [];
     [
@@ -35,29 +34,47 @@ class Form extends React.Component {
     ].forEach((value1, value2, set) => {
       areas.push({ label: value1, value: value1 });
     });
-    // if (!this.state.currentArea) {
-    //   this.setState({ currentArea: array[0] });
-    // }
-    return areas;
+    this.areas = areas;
+    this.setState({ currentArea: this.areas[0] });
   };
 
-  getMachinesFromList = () => {
+  getMachinesFromList = (area) => {
     if (!this.props.machinesList) {
-      return [];
+      this.machines = [];
+      return;
     }
-    return this.props.machinesList
-      .filter((item) => item.machine_location == this.state.currentArea)
+    this.machines = this.props.machinesList
+      .filter((item) => item.machine_location == area)
       .map(({ machine_name }) => {
         return { label: machine_name, value: machine_name };
       });
+    this.setState({ currentMachine: this.machines[0] });
   };
 
+  async componentDidMount() {
+    await this.props.onFormMount();
+    this.setState({ timeStep: "900" });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.machinesList != prevProps.machinesList &&
+      this.props.machinesList
+    ) {
+      this.getAreasFromList();
+      this.getMachinesFromList(this.areas[0].value);
+    }
+  }
+
+  handleAreaChange = (event, stateProperty) => {
+    this.setState({ [stateProperty]: event.target.value });
+    this.getMachinesFromList(event.target.value);
+  };
   handleChange = (event, stateProperty) => {
     this.setState({ [stateProperty]: event.target.value });
   };
 
   render() {
-    console.log(this.props.machinesList);
     return (
       <form>
         <div className="row g-5">
@@ -65,9 +82,9 @@ class Form extends React.Component {
             <Dropdown
               label="Select an area"
               selected={this.state.currentArea}
-              options={this.getAreasFromList()}
+              options={this.areas}
               onSelectedChange={(event) => {
-                this.handleChange(event, "currentArea");
+                this.handleAreaChange(event, "currentArea");
               }}
             />
           </div>
@@ -75,7 +92,7 @@ class Form extends React.Component {
             <Dropdown
               label="Select a machine"
               selected={this.state.currentMachine}
-              options={this.getMachinesFromList()}
+              options={this.machines}
               onSelectedChange={(event) => {
                 this.handleChange(event, "currentMachine");
               }}
