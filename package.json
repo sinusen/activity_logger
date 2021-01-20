@@ -2,14 +2,14 @@
   "name": "activity_logger",
   "version": "1.0.0",
   "description": "An application to log maintenance activities on machines in different areas of the company",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && npm start",
-    "server": "nodemon server.js",
+    "server": "nodemon src/server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
     "client:build": "cd client && npm run build",
-    "setup": "node infrastructure/setup-db.js"
+    "setup": "node src/infrastructure/setup-db.js"
   },
   "repository": {
     "type": "git",
