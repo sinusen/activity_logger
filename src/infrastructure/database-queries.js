@@ -2,7 +2,7 @@
 
 const pool = require("./db-clientpool");
 
-const retrieveTable = async () => {
+const retrieveMachinesTable = async () => {
   const client = await pool.connect();
 
   const query = {
@@ -18,24 +18,64 @@ const retrieveTable = async () => {
       return {
         error: false,
         noData: true,
-        machinesList: null,
+        data: null,
       };
     }
     return {
       error: false,
       noData: false,
-      machinesList: res.rows,
+      data: res.rows,
     };
   } catch (err) {
     console.error(err);
     return {
       error: true,
       noData: null,
-      machinesList: null,
+      data: null,
     };
   } finally {
     client.release();
   }
 };
 
-module.exports = { retrieveTable };
+const retrieveOperatorsTable = async () => {
+  const client = await pool.connect();
+
+  const query = {
+    text: `SELECT
+              first_name||' '||last_name as name,
+              machine_operator,
+              area
+            FROM
+              dw.operator
+            ORDER BY
+              area;`,
+  };
+
+  try {
+    const res = await client.query(query);
+    if (res.rowCount == 0) {
+      return {
+        error: false,
+        noData: true,
+        data: null,
+      };
+    }
+    return {
+      error: false,
+      noData: false,
+      data: res.rows,
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      error: true,
+      noData: null,
+      data: null,
+    };
+  } finally {
+    client.release();
+  }
+};
+
+module.exports = { retrieveMachinesTable, retrieveOperatorsTable };

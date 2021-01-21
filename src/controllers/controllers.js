@@ -1,7 +1,7 @@
-const { retrieveTable } = require("../infrastructure/database-queries");
+const dbQueries = require("../infrastructure/database-queries");
 
-async function analyzeRetrieveResponse() {
-  const { error, noData, machinesList } = await retrieveTable();
+async function analyzeRetrieveResponse(dbFunction) {
+  const { error, noData, data } = await dbFunction();
   if (error || noData) {
     return {
       serverError: true,
@@ -10,12 +10,21 @@ async function analyzeRetrieveResponse() {
   }
   return {
     serverError: false,
-    data: machinesList,
+    data: data,
   };
 }
 
 const responseMachinesRequest = async function (req, res, next) {
-  res.status(200).json(await analyzeRetrieveResponse());
+  console.log("Inside machines response");
+  res
+    .status(200)
+    .json(await analyzeRetrieveResponse(dbQueries.retrieveMachinesTable));
 };
 
-module.exports = { responseMachinesRequest };
+const responseOperatorsRequest = async function (req, res, next) {
+  res
+    .status(200)
+    .json(await analyzeRetrieveResponse(dbQueries.retrieveOperatorsTable));
+};
+
+module.exports = { responseMachinesRequest, responseOperatorsRequest };
