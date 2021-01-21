@@ -5,7 +5,7 @@ import { getFormattedTime, getFormattedDate } from "../helpers/timeFunctions";
 class Form extends React.Component {
   areas = [];
   machines = [];
-  loggers = [
+  operators = [
     { label: "Sinu Sen", value: "SS" },
     { label: "Libi Varghese", value: "LV" },
   ];
@@ -17,15 +17,11 @@ class Form extends React.Component {
       currentMachine: "",
       selectedDate: getFormattedDate(),
       selectedTime: getFormattedTime(),
-      currentLogger: "",
+      currentOperator: "",
     };
   }
 
   getAreasFromList = () => {
-    if (!this.props.machinesList) {
-      this.areas = [];
-      return;
-    }
     let areas = [];
     [
       ...new Set(this.props.machinesList.map((item) => item.machine_location)),
@@ -37,16 +33,26 @@ class Form extends React.Component {
   };
 
   getMachinesFromList = (area) => {
-    if (!this.props.machinesList) {
-      this.machines = [];
-      return;
-    }
     this.machines = this.props.machinesList
       .filter((item) => item.machine_location == area)
       .map(({ machine_name }) => {
         return { label: machine_name, value: machine_name };
       });
     this.setState({ currentMachine: this.machines[0] });
+  };
+  getOperatorsFromList = () => {
+    this.operators = this.props.operatorsList.map(
+      ({ name, machine_operator }) => {
+        return { label: name, value: machine_operator };
+      }
+    );
+    this.setState({ currentOperator: this.operators[0] });
+  };
+  getEpoch = () => {
+    const dateTime = new Date(
+      `${this.state.selectedDate} ${this.state.selectedTime}`
+    );
+    return dateTime.getTime();
   };
 
   async componentDidMount() {
@@ -62,6 +68,12 @@ class Form extends React.Component {
       this.getAreasFromList();
       this.getMachinesFromList(this.areas[0].value);
     }
+    if (
+      this.props.operatorsList != prevProps.operatorsList &&
+      this.props.operatorsList
+    ) {
+      this.getOperatorsFromList();
+    }
   }
 
   handleAreaChange = (event, stateProperty) => {
@@ -72,9 +84,21 @@ class Form extends React.Component {
     this.setState({ [stateProperty]: event.target.value });
   };
 
+  handleFormSubmission = (event) => {
+    this.getEpoch();
+    this.props.onFormSubmit({
+      area: this.state.currentArea.value,
+      machine: this.state.currentMachine.value,
+      epochMilliSeconds: this.getEpoch(),
+      operator: this.state.currentOperator.value,
+      activity: this.state.maintenanceActivity,
+    });
+    event.preventDefault();
+  };
+
   render() {
     return (
-      <form>
+      <form onSubmit={this.handleFormSubmission}>
         <div className="row g-5">
           <div className="col-md-6">
             <Dropdown
@@ -127,10 +151,10 @@ class Form extends React.Component {
           <div className="col-md-12">
             <Dropdown
               label="Please input the initials"
-              selected={this.state.currentLogger}
-              options={this.loggers}
+              selected={this.state.currentOperator}
+              options={this.operators}
               onSelectedChange={(event) => {
-                this.handleChange(event, "currentLogger");
+                this.handleChange(event, "currentOperator");
               }}
             />
           </div>
@@ -149,6 +173,9 @@ class Form extends React.Component {
               }}
             />
           </div>
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
         </div>
       </form>
     );
