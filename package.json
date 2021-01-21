@@ -2,7 +2,7 @@
   "name": "activity_logger",
   "version": "1.0.0",
   "description": "An application to log maintenance activities on machines in different areas of the company",
-  "main": "src/server.js",
+  "main": "./src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && npm start",
