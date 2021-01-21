@@ -15,7 +15,6 @@ async function analyzeRetrieveResponse(dbFunction) {
 }
 
 const responseMachinesRequest = async function (req, res, next) {
-  console.log("Inside machines response");
   res
     .status(200)
     .json(await analyzeRetrieveResponse(dbQueries.retrieveMachinesTable));
@@ -27,4 +26,13 @@ const responseOperatorsRequest = async function (req, res, next) {
     .json(await analyzeRetrieveResponse(dbQueries.retrieveOperatorsTable));
 };
 
-module.exports = { responseMachinesRequest, responseOperatorsRequest };
+const postActivityLog = async function (req, res, next) {
+  console.log(req.body);
+  res.send("POST request to the homepage");
+};
+
+module.exports = {
+  responseMachinesRequest,
+  responseOperatorsRequest,
+  postActivityLog,
+};
