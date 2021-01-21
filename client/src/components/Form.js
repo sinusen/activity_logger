@@ -1,16 +1,14 @@
 import React from "react";
 import Dropdown from "./Dropdown";
-import moment from "moment";
+import { getFormattedTime, getFormattedDate } from "../helpers/timeFunctions";
 
-const getFormattedDate = () => {
-  return moment().format("YYYY-MM-DD");
-};
-const getFormattedTime = () => {
-  return moment().format("LTS");
-};
 class Form extends React.Component {
   areas = [];
   machines = [];
+  loggers = [
+    { label: "Sinu Sen", value: "SS" },
+    { label: "Libi Varghese", value: "LV" },
+  ];
   constructor(props) {
     super(props);
     this.state = {
@@ -18,8 +16,8 @@ class Form extends React.Component {
       currentArea: "",
       currentMachine: "",
       selectedDate: getFormattedDate(),
-      selectedTime: "",
-      timeStep: null,
+      selectedTime: getFormattedTime(),
+      currentLogger: "",
     };
   }
 
@@ -120,10 +118,19 @@ class Form extends React.Component {
               className="form-control"
               id="timePicker"
               type="time"
-              step={this.state.timeStep}
               value={this.state.selectedTime}
               onChange={(event) => {
                 this.handleChange(event, "selectedTime");
+              }}
+            />
+          </div>
+          <div className="col-md-12">
+            <Dropdown
+              label="Please input the initials"
+              selected={this.state.currentLogger}
+              options={this.loggers}
+              onSelectedChange={(event) => {
+                this.handleChange(event, "currentLogger");
               }}
             />
           </div>
