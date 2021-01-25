@@ -20,4 +20,10 @@ function getFormattedTime(date = Date.now()) {
   return [hours, minutes].join(":");
 }
 
-export { getFormattedTime, getFormattedDate };
+//Funtion to get epoch in milliseconds from date time
+function getEpoch(dateValue, timeValue) {
+  const dateTime = new Date(`${dateValue} ${timeValue}`);
+  return dateTime.getTime();
+}
+
+export { getFormattedTime, getFormattedDate, getEpoch };
