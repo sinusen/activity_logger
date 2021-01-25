@@ -28,7 +28,13 @@ const responseOperatorsRequest = async function (req, res, next) {
 
 const postActivityLog = async function (req, res, next) {
   console.log(req.body);
-  res.send("POST request to the homepage");
+  const error = await dbQueries.populateActivityLog(req.body);
+
+  if (error) {
+    res.send({ error: true, message: "Error uploading activity data" });
+    return;
+  }
+  res.send({ error: false, message: "Activity data successfully uploaded" });
 };
 
 module.exports = {

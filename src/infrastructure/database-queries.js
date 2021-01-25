@@ -7,7 +7,7 @@ const retrieveMachinesTable = async () => {
 
   const query = {
     text: `SELECT
-            machine_name,machine_location
+            id,machine_name,machine_location
           FROM 
             dw.machines_list;`,
   };
@@ -43,9 +43,8 @@ const retrieveOperatorsTable = async () => {
 
   const query = {
     text: `SELECT
-              first_name||' '||last_name as name,
-              machine_operator,
-              area
+              id,
+              first_name||' '||last_name as name
             FROM
               dw.operator
             ORDER BY
@@ -78,4 +77,38 @@ const retrieveOperatorsTable = async () => {
   }
 };
 
-module.exports = { retrieveMachinesTable, retrieveOperatorsTable };
+const populateActivityLog = async ({
+  epochMilliSeconds,
+  machineId,
+  operatorId,
+  activity,
+}) => {
+  const client = await pool.connect();
+
+  const query = {
+    text: `INSERT INTO
+            dw.activity_log (epoch_ms,machine_id,operator_id,activity)
+          VALUES
+            ('${epochMilliSeconds}','${machineId}','${operatorId}','${activity}');`,
+  };
+
+  try {
+    const res = await client.query(query);
+    console.log(res);
+    if (res.rowCount == 0) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error(err.detail);
+    return true;
+  } finally {
+    client.release();
+  }
+};
+
+module.exports = {
+  retrieveMachinesTable,
+  retrieveOperatorsTable,
+  populateActivityLog,
+};
