@@ -67,6 +67,7 @@ class Form extends React.Component {
     ) {
       this.operators = getOperatorsFromList(this.props.operatorsList);
       this.setState({ currentOperator: this.operators[0].value });
+      console.log(this.operators);
     }
     if (this.props.postSuccessCount !== prevProps.postSuccessCount) {
       this.setDefaultStates();
@@ -88,14 +89,15 @@ class Form extends React.Component {
         this.state.selectedDate,
         this.state.selectedTime
       ),
-      machineId: this.state.currentMachine,
-      operatorId: this.state.currentOperator,
+      machineId: Number(this.state.currentMachine),
+      operatorId: Number(this.state.currentOperator),
       activity: this.state.maintenanceActivity,
     });
     event.preventDefault();
   };
 
   render() {
+    console.log(this.state);
     return (
       <form onSubmit={this.handleFormSubmission}>
         <div className="row g-5">
