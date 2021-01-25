@@ -16,7 +16,7 @@ const Dropdown = ({ label, selected, options, onSelectedChange }) => {
     <div>
       <label>{label}</label>
       <select
-        value={selected.value}
+        value={selected}
         onChange={onSelectedChange}
         className="form-select"
         aria-label="Default select example"
