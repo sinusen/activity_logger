@@ -97,7 +97,6 @@ class Form extends React.Component {
   };
 
   render() {
-    console.log(this.state);
     return (
       <form onSubmit={this.handleFormSubmission}>
         <div className="row g-5">
