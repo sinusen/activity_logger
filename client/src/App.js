@@ -3,7 +3,12 @@ import axios from "axios";
 import Form from "./components/Form";
 
 class App extends React.Component {
-  state = { error: false, machinesList: null, operatorsList: null };
+  state = {
+    fetchError: false,
+    postSuccessCount: 0,
+    machinesList: null,
+    operatorsList: null,
+  };
   fetchOperationData = async (endPoint) => {
     try {
       const response = await axios.get(`/activity-log/${endPoint}`);
@@ -21,7 +26,7 @@ class App extends React.Component {
     const operators = await this.fetchOperationData("operators");
 
     if (areaAndMachines.error || operators.error) {
-      this.setState({ error: true });
+      this.setState({ fetchError: true });
       return;
     }
     this.setState({ machinesList: areaAndMachines.data });
@@ -29,17 +34,20 @@ class App extends React.Component {
   };
 
   postFormData = async (data) => {
-    console.log(data);
     try {
-      await axios.post(`/activity-log/submit-form-data`, data);
+      const response = await axios.post(`/activity-log/submit-form-data`, data);
+      alert(response.data.message);
+      if (!response.data.error) {
+        this.setState({ postSuccessCount: this.state.postSuccessCount + 1 });
+      }
     } catch (err) {
       console.log(err);
       alert("Form submit error");
     }
   };
   renderForm() {
-    if (this.state.error) {
-      return "Error";
+    if (this.state.fetchError) {
+      return "Error loading data";
     }
     return (
       <Form
@@ -47,6 +55,7 @@ class App extends React.Component {
         machinesList={this.state.machinesList}
         operatorsList={this.state.operatorsList}
         onFormSubmit={this.postFormData}
+        postSuccessCount={this.state.postSuccessCount}
       />
     );
   }
