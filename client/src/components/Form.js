@@ -1,14 +1,20 @@
 import React from "react";
 import Dropdown from "./Dropdown";
-import { getFormattedTime, getFormattedDate } from "../helpers/timeFunctions";
+import {
+  getFormattedTime,
+  getFormattedDate,
+  getEpoch,
+} from "../helpers/time-functions";
+import {
+  getAreasFromList,
+  getMachinesFromList,
+  getOperatorsFromList,
+} from "../helpers/list-handlers";
 
 class Form extends React.Component {
   areas = [];
   machines = [];
-  operators = [
-    { label: "Sinu Sen", value: "SS" },
-    { label: "Libi Varghese", value: "LV" },
-  ];
+  operators = [];
   constructor(props) {
     super(props);
     this.state = {
@@ -21,76 +27,69 @@ class Form extends React.Component {
     };
   }
 
-  getAreasFromList = () => {
-    let areas = [];
-    [
-      ...new Set(this.props.machinesList.map((item) => item.machine_location)),
-    ].forEach((value1, value2, set) => {
-      areas.push({ label: value1, value: value1 });
-    });
-    this.areas = areas;
-    this.setState({ currentArea: this.areas[0] });
-  };
-
-  getMachinesFromList = (area) => {
-    this.machines = this.props.machinesList
-      .filter((item) => item.machine_location == area)
-      .map(({ machine_name }) => {
-        return { label: machine_name, value: machine_name };
-      });
-    this.setState({ currentMachine: this.machines[0] });
-  };
-  getOperatorsFromList = () => {
-    this.operators = this.props.operatorsList.map(
-      ({ name, machine_operator }) => {
-        return { label: name, value: machine_operator };
-      }
-    );
-    this.setState({ currentOperator: this.operators[0] });
-  };
-  getEpoch = () => {
-    const dateTime = new Date(
-      `${this.state.selectedDate} ${this.state.selectedTime}`
-    );
-    return dateTime.getTime();
+  setDefaultStates = () => {
+    const stateDefinition = {
+      ...this.state,
+      maintenanceActivity: "",
+      selectedDate: getFormattedDate(),
+      selectedTime: getFormattedTime(),
+    };
+    this.setState(stateDefinition);
   };
 
   async componentDidMount() {
     await this.props.onFormMount();
-    this.setState({ timeStep: "900" });
   }
+  updateMachines = () => {
+    this.machines = getMachinesFromList(
+      this.state.currentArea,
+      this.props.machinesList
+    );
+    this.setState({ currentMachine: this.machines[0].value });
+  };
 
+  updateAreas = () => {
+    this.areas = getAreasFromList(this.props.machinesList);
+    this.setState({ currentArea: this.areas[0].value }, () => {
+      this.updateMachines();
+    });
+  };
   componentDidUpdate(prevProps) {
     if (
-      this.props.machinesList != prevProps.machinesList &&
+      this.props.machinesList !== prevProps.machinesList &&
       this.props.machinesList
     ) {
-      this.getAreasFromList();
-      this.getMachinesFromList(this.areas[0].value);
+      this.updateAreas();
     }
     if (
-      this.props.operatorsList != prevProps.operatorsList &&
+      this.props.operatorsList !== prevProps.operatorsList &&
       this.props.operatorsList
     ) {
-      this.getOperatorsFromList();
+      this.operators = getOperatorsFromList(this.props.operatorsList);
+      this.setState({ currentOperator: this.operators[0].value });
+    }
+    if (this.props.postSuccessCount !== prevProps.postSuccessCount) {
+      this.setDefaultStates();
     }
   }
 
   handleAreaChange = (event, stateProperty) => {
-    this.setState({ [stateProperty]: event.target.value });
-    this.getMachinesFromList(event.target.value);
+    this.setState({ [stateProperty]: event.target.value }, () => {
+      this.updateMachines();
+    });
   };
   handleChange = (event, stateProperty) => {
     this.setState({ [stateProperty]: event.target.value });
   };
 
   handleFormSubmission = (event) => {
-    this.getEpoch();
     this.props.onFormSubmit({
-      area: this.state.currentArea.value,
-      machine: this.state.currentMachine.value,
-      epochMilliSeconds: this.getEpoch(),
-      operator: this.state.currentOperator.value,
+      epochMilliSeconds: getEpoch(
+        this.state.selectedDate,
+        this.state.selectedTime
+      ),
+      machineId: this.state.currentMachine,
+      operatorId: this.state.currentOperator,
       activity: this.state.maintenanceActivity,
     });
     event.preventDefault();
