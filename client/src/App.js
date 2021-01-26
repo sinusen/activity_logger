@@ -1,10 +1,14 @@
+import "./App.css";
 import React from "react";
 import axios from "axios";
-import Form from "./components/Form";
+import ActivityForm from "./components/ActivityForm";
+import ActivityDisplay from "./components/ActivityDisplay";
 
 class App extends React.Component {
   state = {
-    fetchError: false,
+    formDataError: false,
+    tableDataError: false,
+    activityData: [],
     postSuccessCount: 0,
     machinesList: null,
     operatorsList: null,
@@ -26,7 +30,7 @@ class App extends React.Component {
     const operators = await this.fetchOperationData("operators");
 
     if (areaAndMachines.error || operators.error) {
-      this.setState({ fetchError: true });
+      this.setState({ formDataError: true });
       return;
     }
     this.setState({ machinesList: areaAndMachines.data });
@@ -46,21 +50,47 @@ class App extends React.Component {
     }
   };
   renderForm() {
-    if (this.state.fetchError) {
+    if (this.state.formDataError) {
       return "Error loading data";
     }
     return (
-      <Form
-        onFormMount={this.fetchDropdownData}
-        machinesList={this.state.machinesList}
-        operatorsList={this.state.operatorsList}
-        onFormSubmit={this.postFormData}
-        postSuccessCount={this.state.postSuccessCount}
-      />
+      <div className="activity-form">
+        <ActivityForm
+          onFormMount={this.fetchDropdownData}
+          machinesList={this.state.machinesList}
+          operatorsList={this.state.operatorsList}
+          onFormSubmit={this.postFormData}
+          postSuccessCount={this.state.postSuccessCount}
+        />
+      </div>
     );
   }
+  renderTable() {
+    if (this.state.tableDataError) {
+      return "Error loading data";
+    }
+    return (
+      <div>
+        <ActivityDisplay activityData={this.state.activityData} />
+      </div>
+    );
+  }
+  async componentDidMount() {
+    const activityLog = await this.fetchOperationData("activity-logs");
+    if (activityLog.error) {
+      this.setState({ tableDataError: activityLog.error });
+      return;
+    }
+    this.setState({ activityData: activityLog.data });
+  }
   render() {
-    return <div className="container">{this.renderForm()}</div>;
+    return (
+      <div className="container">
+        <h1 className="text-center main-title">Activity Logger</h1>
+        {this.renderForm()}
+        {this.renderTable()}
+      </div>
+    );
   }
 }
 
