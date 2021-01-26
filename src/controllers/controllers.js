@@ -26,6 +26,12 @@ const responseOperatorsRequest = async function (req, res, next) {
     .json(await analyzeRetrieveResponse(dbQueries.retrieveOperatorsTable));
 };
 
+const getActivityLogs = async function (req, res, next) {
+  res
+    .status(200)
+    .json(await analyzeRetrieveResponse(dbQueries.retrieveActivityTable));
+};
+
 const postActivityLog = async function (req, res, next) {
   console.log(req.body);
   const error = await dbQueries.populateActivityLog(req.body);
@@ -40,5 +46,6 @@ const postActivityLog = async function (req, res, next) {
 module.exports = {
   responseMachinesRequest,
   responseOperatorsRequest,
+  getActivityLogs,
   postActivityLog,
 };

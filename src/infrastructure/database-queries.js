@@ -77,6 +77,39 @@ const retrieveOperatorsTable = async () => {
   }
 };
 
+const retrieveActivityTable = async () => {
+  const client = await pool.connect();
+
+  const query = {
+    text: `SELECT
+            epoch_ms,machine_name,machine_operator,activity
+          FROM 
+            dw.activity_log a
+          LEFT JOIN dw.machines_list b ON a.machine_id = b.id
+          LEFT JOIN dw.operator c ON a.operator_id = c.id
+          ORDER BY
+            epoch_ms DESC;`,
+  };
+
+  try {
+    const res = await client.query(query);
+    return {
+      error: false,
+      noData: false,
+      data: res.rows,
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      error: true,
+      noData: null,
+      data: null,
+    };
+  } finally {
+    client.release();
+  }
+};
+
 const populateActivityLog = async ({
   epochMilliSeconds,
   machineId,
@@ -110,5 +143,6 @@ const populateActivityLog = async ({
 module.exports = {
   retrieveMachinesTable,
   retrieveOperatorsTable,
+  retrieveActivityTable,
   populateActivityLog,
 };
