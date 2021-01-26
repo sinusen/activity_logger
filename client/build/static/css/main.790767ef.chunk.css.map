@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/App.css"],"names":[],"mappings":"AAAA,YACE,gBAAiB,CACjB,mBACF,CACA,eACE,mBACF","file":"main.790767ef.chunk.css","sourcesContent":[".main-title {\r\n  padding-top: 20px;\r\n  padding-bottom: 30px;\r\n}\r\n.activity-form {\r\n  padding-bottom: 50px;\r\n}\r\n"]}
