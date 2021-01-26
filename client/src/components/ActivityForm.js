@@ -2,7 +2,7 @@ import React from "react";
 import Dropdown from "./Dropdown";
 import {
   getFormattedTime,
-  getFormattedDate,
+  getHyphenatedDate,
   getEpoch,
 } from "../helpers/time-functions";
 import {
@@ -21,7 +21,7 @@ class Form extends React.Component {
       maintenanceActivity: "",
       currentArea: "",
       currentMachine: "",
-      selectedDate: getFormattedDate(),
+      selectedDate: getHyphenatedDate(),
       selectedTime: getFormattedTime(),
       currentOperator: "",
     };
@@ -31,7 +31,7 @@ class Form extends React.Component {
     const stateDefinition = {
       ...this.state,
       maintenanceActivity: "",
-      selectedDate: getFormattedDate(),
+      selectedDate: getHyphenatedDate(),
       selectedTime: getFormattedTime(),
     };
     this.setState(stateDefinition);
