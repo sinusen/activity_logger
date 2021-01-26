@@ -1,4 +1,5 @@
 import React from "react";
+import { getSlashedDate, getFormattedTime } from "../helpers/time-functions";
 
 const TableDisplay = ({ activityData }) => {
   const renderTableRows = () => {
@@ -6,15 +7,11 @@ const TableDisplay = ({ activityData }) => {
       return null;
     }
     return activityData.map((row, index) => {
-      let dateTime = new Date(Number(row.epoch_ms));
-
       return (
         <tr key={index}>
           <th scope="row">{index + 1}</th>
-          <td>{`${dateTime.getDate()}/${
-            dateTime.getMonth() + 1
-          }/${dateTime.getFullYear()}`}</td>
-          <td>{`${dateTime.getHours()}:${dateTime.getMinutes()}`}</td>
+          <td>{getSlashedDate(Number(row.epoch_ms))}</td>
+          <td>{getFormattedTime(Number(row.epoch_ms))}</td>
           <td>{row.machine_name}</td>
           <td>{row.machine_operator}</td>
           <td>{row.activity}</td>
