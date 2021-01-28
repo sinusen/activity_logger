@@ -19,11 +19,11 @@ class Form extends React.Component {
     super(props);
     this.state = {
       maintenanceActivity: "",
-      currentArea: "",
-      currentMachine: "",
+      selectedArea: "",
+      selectedMachine: "",
       selectedDate: getHyphenatedDate(),
       selectedTime: getFormattedTime(),
-      currentOperator: "",
+      selectedOperator: "",
     };
   }
 
@@ -42,15 +42,15 @@ class Form extends React.Component {
   }
   updateMachines = () => {
     this.machines = getMachinesFromList(
-      this.state.currentArea,
+      this.state.selectedArea,
       this.props.machinesList
     );
-    this.setState({ currentMachine: this.machines[0].value });
+    this.setState({ selectedMachine: this.machines[0].value });
   };
 
   updateAreas = () => {
     this.areas = getAreasFromList(this.props.machinesList);
-    this.setState({ currentArea: this.areas[0].value }, () => {
+    this.setState({ selectedArea: this.areas[0].value }, () => {
       this.updateMachines();
     });
   };
@@ -66,7 +66,7 @@ class Form extends React.Component {
       this.props.operatorsList
     ) {
       this.operators = getOperatorsFromList(this.props.operatorsList);
-      this.setState({ currentOperator: this.operators[0].value });
+      this.setState({ selectedOperator: this.operators[0].value });
       console.log(this.operators);
     }
     if (this.props.postSuccessCount !== prevProps.postSuccessCount) {
@@ -90,8 +90,8 @@ class Form extends React.Component {
         this.state.selectedDate,
         this.state.selectedTime
       ),
-      machineId: Number(this.state.currentMachine),
-      operatorId: Number(this.state.currentOperator),
+      machineId: Number(this.state.selectedMachine),
+      operatorId: Number(this.state.selectedOperator),
       activity: this.state.maintenanceActivity,
     });
   };
@@ -102,27 +102,27 @@ class Form extends React.Component {
         <div className="row g-5">
           <div className="col-md-6">
             <Dropdown
-              label="Select an area"
-              selected={this.state.currentArea}
+              label="Area"
+              selected={this.state.selectedArea}
               options={this.areas}
               onSelectedChange={(event) => {
-                this.handleAreaChange(event, "currentArea");
+                this.handleAreaChange(event, "selectedArea");
               }}
             />
           </div>
           <div className="col-md-6">
             <Dropdown
-              label="Select a machine"
-              selected={this.state.currentMachine}
+              label="Machine"
+              selected={this.state.selectedMachine}
               options={this.machines}
               onSelectedChange={(event) => {
-                this.handleChange(event, "currentMachine");
+                this.handleChange(event, "selectedMachine");
               }}
             />
           </div>
           <div className="col-md-6">
             <label htmlFor="datePicker" className="form-label">
-              Select the date
+              Date
             </label>
             <input
               className="form-control"
@@ -136,7 +136,7 @@ class Form extends React.Component {
           </div>
           <div className="col-md-6">
             <label htmlFor="timePicker" className="form-label">
-              Select the time
+              Time
             </label>
             <input
               className="form-control"
@@ -150,11 +150,11 @@ class Form extends React.Component {
           </div>
           <div className="col-md-12">
             <Dropdown
-              label="Please input the initials"
-              selected={this.state.currentOperator}
+              label="Operator/Technician"
+              selected={this.state.selectedOperator}
               options={this.operators}
               onSelectedChange={(event) => {
-                this.handleChange(event, "currentOperator");
+                this.handleChange(event, "selectedOperator");
               }}
             />
           </div>
