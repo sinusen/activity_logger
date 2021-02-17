@@ -57,8 +57,6 @@ class App extends React.Component {
       const response = await axios.post(`/activity-log/submit-form-data`, data);
 
       const { cookies } = this.props;
-      console.log(data);
-      console.log(addYearstoCurrentDate(1));
       cookies.set("logger", data.operatorId, {
         expires: addYearstoCurrentDate(1),
       });
@@ -108,7 +106,6 @@ class App extends React.Component {
     this.setState({ activityData: activityLog.data });
   }
   render() {
-    console.log(this.props);
     return (
       <div className="container">
         <h1 className="text-center main-title">Activity Logger</h1>
