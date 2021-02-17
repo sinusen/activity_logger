@@ -1,10 +1,14 @@
 import "./App.css";
 import React from "react";
 import axios from "axios";
-import ActivityForm from "./components/ActivityForm";
-import ActivityDisplay from "./components/ActivityDisplay";
+
 import { instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
+
+import ActivityForm from "./components/ActivityForm";
+import ActivityDisplay from "./components/ActivityDisplay";
+
+import { addYearstoCurrentDate } from "./helpers/time-functions";
 
 class App extends React.Component {
   static propTypes = {
@@ -54,7 +58,10 @@ class App extends React.Component {
 
       const { cookies } = this.props;
       console.log(data);
-      cookies.set("logger", data.operatorId);
+      console.log(addYearstoCurrentDate(1));
+      cookies.set("logger", data.operatorId, {
+        expires: addYearstoCurrentDate(1),
+      });
 
       alert(response.data.message);
       if (!response.data.error) {
