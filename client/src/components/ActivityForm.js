@@ -17,6 +17,7 @@ class Form extends React.Component {
   operators = [];
   constructor(props) {
     super(props);
+
     this.state = {
       maintenanceActivity: "",
       selectedArea: "",
@@ -97,6 +98,7 @@ class Form extends React.Component {
   };
 
   render() {
+    console.log(this.props);
     return (
       <form onSubmit={this.handleFormSubmission}>
         <div className="row g-5">

@@ -3,16 +3,27 @@ import React from "react";
 import axios from "axios";
 import ActivityForm from "./components/ActivityForm";
 import ActivityDisplay from "./components/ActivityDisplay";
+import { instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
 
 class App extends React.Component {
-  state = {
-    formDataError: false,
-    tableDataError: false,
-    activityData: [],
-    postSuccessCount: 0,
-    machinesList: null,
-    operatorsList: null,
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired,
   };
+  constructor(props) {
+    super(props);
+    const { cookies } = props;
+    this.state = {
+      name: (cookies && cookies.get("name")) || "Ben",
+      formDataError: false,
+      tableDataError: false,
+      activityData: [],
+      postSuccessCount: 0,
+      machinesList: null,
+      operatorsList: null,
+    };
+  }
+
   fetchOperationData = async (endPoint) => {
     try {
       const response = await axios.get(`/activity-log/${endPoint}`);
@@ -40,6 +51,11 @@ class App extends React.Component {
   postFormData = async (data) => {
     try {
       const response = await axios.post(`/activity-log/submit-form-data`, data);
+
+      const { cookies } = this.props;
+      console.log(data);
+      cookies.set("logger", data.operatorId);
+
       alert(response.data.message);
       if (!response.data.error) {
         this.setState({ postSuccessCount: this.state.postSuccessCount + 1 });
@@ -61,6 +77,7 @@ class App extends React.Component {
           operatorsList={this.state.operatorsList}
           onFormSubmit={this.postFormData}
           postSuccessCount={this.state.postSuccessCount}
+          loggedOperator={this.props.cookies.get("logger") || null}
         />
       </div>
     );
@@ -84,6 +101,7 @@ class App extends React.Component {
     this.setState({ activityData: activityLog.data });
   }
   render() {
+    console.log(this.props);
     return (
       <div className="container">
         <h1 className="text-center main-title">Activity Logger</h1>
@@ -94,4 +112,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withCookies(App);
