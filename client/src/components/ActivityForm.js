@@ -67,7 +67,10 @@ class Form extends React.Component {
       this.props.operatorsList
     ) {
       this.operators = getOperatorsFromList(this.props.operatorsList);
-      this.setState({ selectedOperator: this.operators[0].value });
+      console.log(this.props.loggedOperator);
+      this.setState({
+        selectedOperator: this.props.loggedOperator || this.operators[0].value,
+      });
       console.log(this.operators);
     }
     if (this.props.postSuccessCount !== prevProps.postSuccessCount) {
