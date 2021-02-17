@@ -11,6 +11,8 @@ const createDummyTables = async () => {
     id serial,
     machine_name character varying COLLATE pg_catalog."default",
     machine_location character varying COLLATE pg_catalog."default",
+    activity_count smallint,
+    updated_at bigint,
     PRIMARY KEY (id),
     UNIQUE(machine_name,machine_location)
     )
@@ -65,6 +67,34 @@ const createDummyTables = async () => {
       OIDS = FALSE
     )
     TABLESPACE pg_default;
+    CREATE FUNCTION dw.activity_log_insert_trigger()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+    AS $BODY$
+
+    DECLARE 
+      activity_count_holder integer;
+      id_holder integer;
+
+    BEGIN
+
+    SELECT coalesce(activity_count,0),id INTO activity_count_holder,id_holder from dw.machines_list WHERE id = NEW.machine_id;
+
+    IF found AND NEW.machine_id IS NOT NULL THEN
+      UPDATE dw.machines_list
+      SET activity_count = activity_count_holder+1,updated_at = ROUND(extract(epoch from now()))
+      WHERE id = NEW.machine_id;
+    END IF;
+
+    RETURN NEW;
+    END$BODY$;
+    CREATE TRIGGER activity_log_event_trigger
+      AFTER INSERT
+      ON dw.activity_log
+      FOR EACH ROW
+      EXECUTE PROCEDURE dw.activity_log_insert_trigger();
     COMMIT;`,
   };
   try {
