@@ -17,6 +17,7 @@ class Form extends React.Component {
   operators = [];
   constructor(props) {
     super(props);
+
     this.state = {
       maintenanceActivity: "",
       selectedArea: "",
@@ -66,7 +67,10 @@ class Form extends React.Component {
       this.props.operatorsList
     ) {
       this.operators = getOperatorsFromList(this.props.operatorsList);
-      this.setState({ selectedOperator: this.operators[0].value });
+      console.log(this.props.loggedOperator);
+      this.setState({
+        selectedOperator: this.props.loggedOperator || this.operators[0].value,
+      });
       console.log(this.operators);
     }
     if (this.props.postSuccessCount !== prevProps.postSuccessCount) {
@@ -97,6 +101,7 @@ class Form extends React.Component {
   };
 
   render() {
+    console.log(this.props);
     return (
       <form onSubmit={this.handleFormSubmission}>
         <div className="row g-5">

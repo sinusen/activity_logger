@@ -38,4 +38,16 @@ function getEpoch(dateValue, timeValue) {
   return dateTime.getTime();
 }
 
-export { getFormattedTime, getHyphenatedDate, getEpoch, getSlashedDate };
+function addYearstoCurrentDate(years = 0) {
+  let expiryDate = new Date();
+  expiryDate.setFullYear(expiryDate.getFullYear() + years);
+  return new Date(expiryDate);
+}
+
+export {
+  getFormattedTime,
+  getHyphenatedDate,
+  getEpoch,
+  getSlashedDate,
+  addYearstoCurrentDate,
+};

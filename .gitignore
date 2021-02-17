@@ -4,7 +4,7 @@
 package-lock.json
 .env
 
-# Prettier settings directory
+# Vscode settings directory
 /.vscode
 
 .eslintcache
