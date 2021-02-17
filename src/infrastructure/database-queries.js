@@ -9,7 +9,9 @@ const retrieveMachinesTable = async () => {
     text: `SELECT
             id,machine_name,machine_location
           FROM 
-            dw.machines_list;`,
+            dw.machines_list
+          ORDER BY
+            activity_count DESC NULLS LAST,machine_name ASC;`,
   };
 
   try {
