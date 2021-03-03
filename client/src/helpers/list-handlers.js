@@ -1,4 +1,4 @@
-const getAreasFromList = (machinesList) => {
+const getMachineLocationsFromList = (machinesList) => {
   let areas = [];
   [...new Set(machinesList.map((item) => item.machine_location))].forEach(
     (value1, value2, set) => {
@@ -8,9 +8,26 @@ const getAreasFromList = (machinesList) => {
   return areas;
 };
 
-const getMachinesFromList = (area, machinesList) => {
+const getMachineGroupsFromList = (location, machinesList) => {
+  const machineGroups = [];
+  [
+    ...new Set(
+      machinesList
+        .filter((item) => item.machine_location === location)
+        .map((item) => item.machine_group)
+    ),
+  ].forEach((value1, value2, set) => {
+    machineGroups.push({ label: value1, value: value1 });
+  });
+  return machineGroups;
+};
+
+const getMachinesFromList = (location, group, machinesList) => {
   const machines = machinesList
-    .filter((item) => item.machine_location === area)
+    .filter(
+      (item) =>
+        item.machine_location === location && item.machine_group === group
+    )
     .map(({ id, machine_name }) => {
       return { label: machine_name, value: id };
     });
@@ -24,4 +41,9 @@ const getOperatorsFromList = (operatorsList) => {
   return operators;
 };
 
-export { getAreasFromList, getMachinesFromList, getOperatorsFromList };
+export {
+  getMachineLocationsFromList,
+  getMachineGroupsFromList,
+  getMachinesFromList,
+  getOperatorsFromList,
+};

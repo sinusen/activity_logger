@@ -41,14 +41,14 @@ class App extends React.Component {
   };
 
   fetchDropdownData = async () => {
-    const areaAndMachines = await this.fetchOperationData("area-and-machines");
+    const machinesData = await this.fetchOperationData("machines_groups_areas");
     const operators = await this.fetchOperationData("operators");
 
-    if (areaAndMachines.error || operators.error) {
+    if (machinesData.error || operators.error) {
       this.setState({ formDataError: true });
       return;
     }
-    this.setState({ machinesList: areaAndMachines.data });
+    this.setState({ machinesList: machinesData.data });
     this.setState({ operatorsList: operators.data });
   };
 

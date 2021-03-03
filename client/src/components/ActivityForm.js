@@ -6,22 +6,25 @@ import {
   getEpoch,
 } from "../helpers/time-functions";
 import {
-  getAreasFromList,
+  getMachineLocationsFromList,
+  getMachineGroupsFromList,
   getMachinesFromList,
   getOperatorsFromList,
 } from "../helpers/list-handlers";
 
 class Form extends React.Component {
-  areas = [];
-  machines = [];
+  machineNames = [];
+  machineGroups = [];
+  machineLocations = [];
   operators = [];
   constructor(props) {
     super(props);
 
     this.state = {
       maintenanceActivity: "",
-      selectedArea: "",
       selectedMachine: "",
+      selectedMachineGroup: "",
+      selectedMachineLocation: "",
       selectedDate: getHyphenatedDate(),
       selectedTime: getFormattedTime(),
       selectedOperator: "",
@@ -42,25 +45,41 @@ class Form extends React.Component {
     await this.props.onFormMount();
   }
   updateMachines = () => {
-    this.machines = getMachinesFromList(
-      this.state.selectedArea,
+    this.machineNames = getMachinesFromList(
+      this.state.selectedMachineLocation,
+      this.state.selectedMachineGroup,
       this.props.machinesList
     );
-    this.setState({ selectedMachine: this.machines[0].value });
+    this.setState({ selectedMachine: this.machineNames[0].value });
   };
 
-  updateAreas = () => {
-    this.areas = getAreasFromList(this.props.machinesList);
-    this.setState({ selectedArea: this.areas[0].value }, () => {
+  updateMachineGroups = () => {
+    this.machineGroups = getMachineGroupsFromList(
+      this.state.selectedMachineLocation,
+      this.props.machinesList
+    );
+    this.setState({ selectedMachineGroup: this.machineGroups[0].value }, () => {
       this.updateMachines();
     });
+  };
+
+  updateMachineLocations = () => {
+    this.machineLocations = getMachineLocationsFromList(
+      this.props.machinesList
+    );
+    this.setState(
+      { selectedMachineLocation: this.machineLocations[0].value },
+      () => {
+        this.updateMachineGroups();
+      }
+    );
   };
   componentDidUpdate(prevProps) {
     if (
       this.props.machinesList !== prevProps.machinesList &&
       this.props.machinesList
     ) {
-      this.updateAreas();
+      this.updateMachineLocations();
     }
     if (
       this.props.operatorsList !== prevProps.operatorsList &&
@@ -77,6 +96,11 @@ class Form extends React.Component {
   }
 
   handleAreaChange = (event, stateProperty) => {
+    this.setState({ [stateProperty]: event.target.value }, () => {
+      this.updateMachineGroups();
+    });
+  };
+  handleGroupChange = (event, stateProperty) => {
     this.setState({ [stateProperty]: event.target.value }, () => {
       this.updateMachines();
     });
@@ -102,28 +126,41 @@ class Form extends React.Component {
     return (
       <form onSubmit={this.handleFormSubmission}>
         <div className="row g-5">
-          <div className="col-md-6">
+          <div className="col-md-4">
             <Dropdown
               label="Area"
-              selected={this.state.selectedArea}
-              options={this.areas}
+              labelClass="form-label fw-bold"
+              selected={this.state.selectedMachineLocation}
+              options={this.machineLocations}
               onSelectedChange={(event) => {
-                this.handleAreaChange(event, "selectedArea");
+                this.handleAreaChange(event, "selectedMachineLocation");
               }}
             />
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
+            <Dropdown
+              label="Group"
+              labelClass="form-label fw-bold"
+              selected={this.state.selectedMachineGroup}
+              options={this.machineGroups}
+              onSelectedChange={(event) => {
+                this.handleGroupChange(event, "selectedMachineGroup");
+              }}
+            />
+          </div>
+          <div className="col-md-4">
             <Dropdown
               label="Machine"
+              labelClass="form-label fw-bold"
               selected={this.state.selectedMachine}
-              options={this.machines}
+              options={this.machineNames}
               onSelectedChange={(event) => {
                 this.handleChange(event, "selectedMachine");
               }}
             />
           </div>
           <div className="col-md-6">
-            <label htmlFor="datePicker" className="form-label">
+            <label htmlFor="datePicker" className="form-label fw-bold">
               Date
             </label>
             <input
@@ -137,7 +174,7 @@ class Form extends React.Component {
             />
           </div>
           <div className="col-md-6">
-            <label htmlFor="timePicker" className="form-label">
+            <label htmlFor="timePicker" className="form-label fw-bold">
               Time
             </label>
             <input
@@ -153,6 +190,7 @@ class Form extends React.Component {
           <div className="col-md-12">
             <Dropdown
               label="Operator/Technician"
+              labelClass="form-label fw-bold"
               selected={this.state.selectedOperator}
               options={this.operators}
               onSelectedChange={(event) => {
@@ -161,7 +199,10 @@ class Form extends React.Component {
             />
           </div>
           <div className="col-12">
-            <label htmlFor="maintenanceActivities" className="form-label">
+            <label
+              htmlFor="maintenanceActivities"
+              className="form-label fw-bold"
+            >
               Maintenance Activities
             </label>
             <textarea

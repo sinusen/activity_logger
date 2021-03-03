@@ -11,23 +11,24 @@ const createDummyTables = async () => {
     id serial,
     machine_name character varying COLLATE pg_catalog."default",
     machine_location character varying COLLATE pg_catalog."default",
+    machine_group character varying COLLATE pg_catalog."default",
     activity_count smallint,
     updated_at bigint,
     PRIMARY KEY (id),
-    UNIQUE(machine_name,machine_location)
+    UNIQUE(machine_name,machine_group,machine_location)
     )
     WITH (
         OIDS = FALSE
     )
     TABLESPACE pg_default;
     INSERT INTO 
-        dw.machines_list (machine_name,machine_location) 
+        dw.machines_list (machine_name,machine_group,machine_location) 
     VALUES 
-        ('dummy machine1','dummy area1'),
-        ('dummy machine2','dummy area1'),
-        ('dummy machine3', 'dummy area2'),
-        ('dummy machine4','dummy area3'),
-        ('dummy machine5','dummy area2');
+        ('dummy machine1','dummy group1','dummy area1'),
+        ('dummy machine2','dummy group1','dummy area1'),
+        ('dummy machine3', 'dummy group2','dummy area2'),
+        ('dummy machine4','dummy group3','dummy area3'),
+        ('dummy machine5','dummy group2','dummy area2');
     CREATE TABLE IF NOT EXISTS 
         dw.operator
     (
