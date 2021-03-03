@@ -1,6 +1,12 @@
 import React from "react";
 
-const Dropdown = ({ label, selected, options, onSelectedChange }) => {
+const Dropdown = ({
+  label,
+  selected,
+  options,
+  onSelectedChange,
+  labelClass = "",
+}) => {
   const generatedList =
     options.length > 0
       ? options.map((option) => {
@@ -12,9 +18,10 @@ const Dropdown = ({ label, selected, options, onSelectedChange }) => {
         })
       : null;
 
+  console.log(labelClass);
   return (
     <div>
-      <label>{label}</label>
+      <label className={labelClass}>{label}</label>
       <select
         value={selected}
         onChange={onSelectedChange}
