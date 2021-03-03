@@ -16,8 +16,7 @@ const getMachineGroupsFromList = (location, machinesList) => {
         .filter((item) => item.machine_location === location)
         .map((item) => item.machine_group)
     ),
-  ];
-  forEach((value1, value2, set) => {
+  ].forEach((value1, value2, set) => {
     machineGroups.push({ label: value1, value: value1 });
   });
   return machineGroups;

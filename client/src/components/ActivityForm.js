@@ -47,7 +47,7 @@ class Form extends React.Component {
   updateMachines = () => {
     this.machineNames = getMachinesFromList(
       this.state.selectedMachineLocation,
-      this.state.selectedGroup,
+      this.state.selectedMachineGroup,
       this.props.machinesList
     );
     this.setState({ selectedMachine: this.machineNames[0].value });
@@ -100,6 +100,11 @@ class Form extends React.Component {
       this.updateMachineGroups();
     });
   };
+  handleGroupChange = (event, stateProperty) => {
+    this.setState({ [stateProperty]: event.target.value }, () => {
+      this.updateMachines();
+    });
+  };
   handleChange = (event, stateProperty) => {
     this.setState({ [stateProperty]: event.target.value });
   };
@@ -121,7 +126,7 @@ class Form extends React.Component {
     return (
       <form onSubmit={this.handleFormSubmission}>
         <div className="row g-5">
-          <div className="col-md-6">
+          <div className="col-md-4">
             <Dropdown
               label="Area"
               selected={this.state.selectedMachineLocation}
@@ -131,7 +136,17 @@ class Form extends React.Component {
               }}
             />
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
+            <Dropdown
+              label="Group"
+              selected={this.state.selectedMachineGroup}
+              options={this.machineGroups}
+              onSelectedChange={(event) => {
+                this.handleGroupChange(event, "selectedMachineGroup");
+              }}
+            />
+          </div>
+          <div className="col-md-4">
             <Dropdown
               label="Machine"
               selected={this.state.selectedMachine}
