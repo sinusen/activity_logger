@@ -7,11 +7,11 @@ const retrieveMachinesTable = async () => {
 
   const query = {
     text: `SELECT
-            id,machine_name,machine_location
+            id,machine_name,machine_group,machine_location
           FROM 
             dw.machines_list
           ORDER BY
-            activity_count DESC NULLS LAST,machine_name ASC;`,
+            machine_location,machine_group,machine_name;`,
   };
 
   try {
