@@ -129,6 +129,7 @@ class Form extends React.Component {
           <div className="col-md-4">
             <Dropdown
               label="Area"
+              labelClass="form-label fw-bold"
               selected={this.state.selectedMachineLocation}
               options={this.machineLocations}
               onSelectedChange={(event) => {
@@ -139,6 +140,7 @@ class Form extends React.Component {
           <div className="col-md-4">
             <Dropdown
               label="Group"
+              labelClass="form-label fw-bold"
               selected={this.state.selectedMachineGroup}
               options={this.machineGroups}
               onSelectedChange={(event) => {
@@ -149,6 +151,7 @@ class Form extends React.Component {
           <div className="col-md-4">
             <Dropdown
               label="Machine"
+              labelClass="form-label fw-bold"
               selected={this.state.selectedMachine}
               options={this.machineNames}
               onSelectedChange={(event) => {
@@ -157,7 +160,7 @@ class Form extends React.Component {
             />
           </div>
           <div className="col-md-6">
-            <label htmlFor="datePicker" className="form-label">
+            <label htmlFor="datePicker" className="form-label fw-bold">
               Date
             </label>
             <input
@@ -171,7 +174,7 @@ class Form extends React.Component {
             />
           </div>
           <div className="col-md-6">
-            <label htmlFor="timePicker" className="form-label">
+            <label htmlFor="timePicker" className="form-label fw-bold">
               Time
             </label>
             <input
@@ -187,6 +190,7 @@ class Form extends React.Component {
           <div className="col-md-12">
             <Dropdown
               label="Operator/Technician"
+              labelClass="form-label fw-bold"
               selected={this.state.selectedOperator}
               options={this.operators}
               onSelectedChange={(event) => {
@@ -195,7 +199,10 @@ class Form extends React.Component {
             />
           </div>
           <div className="col-12">
-            <label htmlFor="maintenanceActivities" className="form-label">
+            <label
+              htmlFor="maintenanceActivities"
+              className="form-label fw-bold"
+            >
               Maintenance Activities
             </label>
             <textarea
