@@ -30,13 +30,15 @@ const createDummyTables = async () => {
         ('dummy machine4','dummy group3','dummy area3'),
         ('dummy machine5','dummy group2','dummy area2');
     CREATE TABLE IF NOT EXISTS 
-        dw.operator
+        dw.people
     (
         id serial,
         first_name character varying COLLATE pg_catalog."default" NOT NULL,
         last_name character varying COLLATE pg_catalog."default" NOT NULL,
-        machine_operator character varying COLLATE pg_catalog."default",
+        initials character varying COLLATE pg_catalog."default",
         area character varying[] COLLATE pg_catalog."default",
+        mobile_number character varying[] COLLATE pg_catalog."default",
+        email_id varying[] COLLATE pg_catalog."default",
         PRIMARY KEY (id),
         UNIQUE (first_name,last_name)
     )
@@ -45,7 +47,7 @@ const createDummyTables = async () => {
     )
     TABLESPACE pg_default;
     INSERT INTO 
-        dw.operator (first_name,last_name,machine_operator,area) 
+        dw.people (first_name,last_name,initials,area) 
     VALUES 
         ('first1','last1','fl1',ARRAY['dummy_department1','dummy_department3']),
         ('first2','last2','fl2',ARRAY['dummy_department2']),
@@ -61,7 +63,7 @@ const createDummyTables = async () => {
         activity character varying,
         PRIMARY KEY (pk),
         FOREIGN KEY (machine_id) REFERENCES dw.machines_list(id),
-        FOREIGN KEY (operator_id) REFERENCES dw.operator(id),
+        FOREIGN KEY (operator_id) REFERENCES dw.people(id),
         UNIQUE (epoch_ms,machine_id,operator_id)
     )
     WITH (
