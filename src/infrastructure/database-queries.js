@@ -48,7 +48,7 @@ const retrieveOperatorsTable = async () => {
               id,
               first_name||' '||last_name as name
             FROM
-              dw.operator
+              dw.people
             ORDER BY
               area;`,
   };
@@ -84,11 +84,11 @@ const retrieveActivityTable = async () => {
 
   const query = {
     text: `SELECT
-            epoch_ms,machine_name,machine_operator,activity
+            epoch_ms,machine_name,initials,activity
           FROM 
             dw.activity_log a
           LEFT JOIN dw.machines_list b ON a.machine_id = b.id
-          LEFT JOIN dw.operator c ON a.operator_id = c.id
+          LEFT JOIN dw.people c ON a.operator_id = c.id
           ORDER BY
             epoch_ms DESC;`,
   };
