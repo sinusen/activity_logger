@@ -50,7 +50,7 @@ const retrieveOperatorsTable = async () => {
             FROM
               dw.people
             ORDER BY
-              area;`,
+              area,first_name;`,
   };
 
   try {
