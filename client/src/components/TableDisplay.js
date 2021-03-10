@@ -13,7 +13,7 @@ const TableDisplay = ({ activityData }) => {
           <td>{getSlashedDate(Number(row.epoch_ms))}</td>
           <td>{getFormattedTime(Number(row.epoch_ms))}</td>
           <td>{row.machine_name}</td>
-          <td>{row.machine_operator}</td>
+          <td>{row.initials}</td>
           <td>{row.activity}</td>
         </tr>
       );
