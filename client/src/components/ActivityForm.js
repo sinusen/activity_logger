@@ -1,4 +1,7 @@
+import "./ActivityForm.css";
+
 import React from "react";
+
 import Dropdown from "./Dropdown";
 import {
   getFormattedTime,
@@ -125,7 +128,7 @@ class Form extends React.Component {
   render() {
     return (
       <form onSubmit={this.handleFormSubmission}>
-        <div className="row g-5">
+        <div className="row g-3">
           <div className="col-md-4">
             <Dropdown
               label="Area"

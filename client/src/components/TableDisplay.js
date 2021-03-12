@@ -8,14 +8,18 @@ const TableDisplay = ({ activityData }) => {
     }
     return activityData.map((row, index) => {
       return (
-        <tr key={index}>
-          <th scope="row">{index + 1}</th>
-          <td>{getSlashedDate(Number(row.epoch_ms))}</td>
-          <td>{getFormattedTime(Number(row.epoch_ms))}</td>
-          <td>{row.machine_name}</td>
-          <td>{row.initials}</td>
-          <td>{row.activity}</td>
-        </tr>
+        <React.Fragment key={index}>
+          <tr>
+            <th scope="row">{index + 1}</th>
+            <td>{getSlashedDate(Number(row.epoch_ms))}</td>
+            <td>{getFormattedTime(Number(row.epoch_ms))}</td>
+            <td>{row.machine_name}</td>
+            <td>{row.initials}</td>
+          </tr>
+          <tr>
+            <td colSpan="5">{row.activity}</td>
+          </tr>
+        </React.Fragment>
       );
     });
   };
@@ -29,7 +33,6 @@ const TableDisplay = ({ activityData }) => {
             <th scope="col">Time</th>
             <th scope="col">Machine</th>
             <th scope="col">Operator</th>
-            <th scope="col">Activity</th>
           </tr>
         </thead>
         <tbody>{renderTableRows()}</tbody>
