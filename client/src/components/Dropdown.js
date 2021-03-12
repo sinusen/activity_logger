@@ -18,7 +18,6 @@ const Dropdown = ({
         })
       : null;
 
-  console.log(labelClass);
   return (
     <div>
       <label className={labelClass}>{label}</label>
