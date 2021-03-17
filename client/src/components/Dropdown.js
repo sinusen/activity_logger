@@ -19,7 +19,7 @@ const Dropdown = ({
       : null;
 
   return (
-    <div>
+    <React.Fragment>
       <label className={labelClass}>{label}</label>
       <select
         value={selected}
@@ -29,7 +29,7 @@ const Dropdown = ({
       >
         {generatedList}
       </select>
-    </div>
+    </React.Fragment>
   );
 };
 

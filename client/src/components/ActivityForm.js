@@ -128,78 +128,90 @@ class Form extends React.Component {
   render() {
     return (
       <form onSubmit={this.handleFormSubmission}>
-        <div className="row g-3">
+        <div className="row g-5">
           <div className="col-md-4">
-            <Dropdown
-              label="Area"
-              labelClass="form-label fw-bold"
-              selected={this.state.selectedMachineLocation}
-              options={this.machineLocations}
-              onSelectedChange={(event) => {
-                this.handleAreaChange(event, "selectedMachineLocation");
-              }}
-            />
+            <div className="input-group">
+              <Dropdown
+                label="Area"
+                labelClass="input-group-text fw-bold"
+                selected={this.state.selectedMachineLocation}
+                options={this.machineLocations}
+                onSelectedChange={(event) => {
+                  this.handleAreaChange(event, "selectedMachineLocation");
+                }}
+              />
+            </div>
           </div>
           <div className="col-md-4">
-            <Dropdown
-              label="Group"
-              labelClass="form-label fw-bold"
-              selected={this.state.selectedMachineGroup}
-              options={this.machineGroups}
-              onSelectedChange={(event) => {
-                this.handleGroupChange(event, "selectedMachineGroup");
-              }}
-            />
+            <div className="input-group">
+              <Dropdown
+                label="Group"
+                labelClass="input-group-text fw-bold"
+                selected={this.state.selectedMachineGroup}
+                options={this.machineGroups}
+                onSelectedChange={(event) => {
+                  this.handleGroupChange(event, "selectedMachineGroup");
+                }}
+              />
+            </div>
           </div>
           <div className="col-md-4">
-            <Dropdown
-              label="Machine"
-              labelClass="form-label fw-bold"
-              selected={this.state.selectedMachine}
-              options={this.machineNames}
-              onSelectedChange={(event) => {
-                this.handleChange(event, "selectedMachine");
-              }}
-            />
+            <div className="input-group">
+              <Dropdown
+                label="Machine"
+                labelClass="input-group-text fw-bold"
+                selected={this.state.selectedMachine}
+                options={this.machineNames}
+                onSelectedChange={(event) => {
+                  this.handleChange(event, "selectedMachine");
+                }}
+              />
+            </div>
           </div>
           <div className="col-md-6">
-            <label htmlFor="datePicker" className="form-label fw-bold">
-              Date
-            </label>
-            <input
-              className="form-control"
-              id="datePicker"
-              type="date"
-              value={this.state.selectedDate}
-              onChange={(event) => {
-                this.handleChange(event, "selectedDate");
-              }}
-            />
+            <div className="input-group">
+              <label htmlFor="datePicker" className="input-group-text fw-bold">
+                Date
+              </label>
+              <input
+                className="form-control"
+                id="datePicker"
+                type="date"
+                value={this.state.selectedDate}
+                onChange={(event) => {
+                  this.handleChange(event, "selectedDate");
+                }}
+              />
+            </div>
           </div>
           <div className="col-md-6">
-            <label htmlFor="timePicker" className="form-label fw-bold">
-              Time
-            </label>
-            <input
-              className="form-control"
-              id="timePicker"
-              type="time"
-              value={this.state.selectedTime}
-              onChange={(event) => {
-                this.handleChange(event, "selectedTime");
-              }}
-            />
+            <div className="input-group">
+              <label htmlFor="timePicker" className="input-group-text fw-bold">
+                Time
+              </label>
+              <input
+                className="form-control"
+                id="timePicker"
+                type="time"
+                value={this.state.selectedTime}
+                onChange={(event) => {
+                  this.handleChange(event, "selectedTime");
+                }}
+              />
+            </div>
           </div>
           <div className="col-md-12">
-            <Dropdown
-              label="Operator/Technician"
-              labelClass="form-label fw-bold"
-              selected={this.state.selectedOperator}
-              options={this.operators}
-              onSelectedChange={(event) => {
-                this.handleChange(event, "selectedOperator");
-              }}
-            />
+            <div className="input-group">
+              <Dropdown
+                label="Operator/Technician"
+                labelClass="input-group-text fw-bold"
+                selected={this.state.selectedOperator}
+                options={this.operators}
+                onSelectedChange={(event) => {
+                  this.handleChange(event, "selectedOperator");
+                }}
+              />
+            </div>
           </div>
           <div className="col-12">
             <label
