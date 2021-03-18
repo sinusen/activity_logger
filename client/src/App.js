@@ -76,7 +76,7 @@ class App extends React.Component {
       return "Error loading data";
     }
     return (
-      <div className="activity-form">
+      <div className="mt-3">
         <ActivityForm
           onFormMount={this.fetchDropdownData}
           machinesList={this.state.machinesList}
@@ -93,7 +93,7 @@ class App extends React.Component {
       return "Error loading data";
     }
     return (
-      <div>
+      <div className="mt-3">
         <ActivityDisplay activityData={this.state.activityData} />
       </div>
     );
