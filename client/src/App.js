@@ -1,12 +1,13 @@
 import "./App.css";
 import React from "react";
 import axios from "axios";
-
 import { instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import ActivityForm from "./components/ActivityForm";
 import ActivityDisplay from "./components/ActivityDisplay";
+import NavigationBar from "./components/NavigationBar";
 
 import { addYearstoCurrentDate } from "./helpers/time-functions";
 
@@ -109,8 +110,13 @@ class App extends React.Component {
     return (
       <div className="container">
         <h1 className="text-center main-title">Activity Logger</h1>
-        {this.renderForm()}
-        {this.renderTable()}
+        <Router>
+          <NavigationBar />
+          <Route exact path="/">
+            {this.renderForm()}
+          </Route>
+          <Route path="/activitydisplay">{this.renderTable()}</Route>
+        </Router>
       </div>
     );
   }
