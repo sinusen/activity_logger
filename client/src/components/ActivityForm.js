@@ -128,7 +128,7 @@ class Form extends React.Component {
   render() {
     return (
       <form onSubmit={this.handleFormSubmission}>
-        <div className="row g-5">
+        <div className="row g-4">
           <div className="col-md-4">
             <div className="input-group">
               <Dropdown
