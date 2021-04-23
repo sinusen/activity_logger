@@ -86,7 +86,7 @@ const retrieveActivityTable = async () => {
 
   const query = {
     text: `SELECT
-            epoch_ms,machine_name,initials,activity
+            pk,epoch_ms,machine_name,initials,activity
           FROM 
             dw.activity_log a
           LEFT JOIN dw.machines_list b ON a.machine_id = b.id
