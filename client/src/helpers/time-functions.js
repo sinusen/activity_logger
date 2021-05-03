@@ -34,7 +34,7 @@ function getFormattedTime(date = Date.now()) {
 
 //Funtion to get epoch in milliseconds from date time
 function getEpoch(dateValue, timeValue) {
-  const dateTime = new Date(`${dateValue} ${timeValue}`);
+  const dateTime = new Date(`${dateValue}T${timeValue}`);
   return dateTime.getTime();
 }
 
