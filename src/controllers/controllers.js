@@ -43,9 +43,31 @@ const postActivityLog = async function (req, res, next) {
   res.send({ error: false, message: "Activity data successfully uploaded" });
 };
 
+const editActivityLog = async function (req, res, next) {
+  const error = await dbQueries.editActivityLog(req.body);
+
+  if (error) {
+    res.send({ error: true, message: "Error uploading activity data" });
+    return;
+  }
+  res.send({ error: false, message: "Activity data successfully updated" });
+};
+
+const deleteActivityLog = async function (req, res, next) {
+  const error = await dbQueries.deleteActivityLog(req.body);
+
+  if (error) {
+    res.send({ error: true, message: "Error deleting activity data" });
+    return;
+  }
+  res.send({ error: false, message: "Activity data successfully deleted" });
+};
+
 module.exports = {
   responseMachinesRequest,
   responseOperatorsRequest,
   getActivityLogs,
   postActivityLog,
+  editActivityLog,
+  deleteActivityLog,
 };

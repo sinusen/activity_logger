@@ -46,7 +46,8 @@ const retrieveOperatorsTable = async () => {
   const query = {
     text: `SELECT
               id,
-              first_name||' '||last_name as name
+              first_name||' '||last_name as name,
+              initials
             FROM
               dw.people
             WHERE
@@ -91,6 +92,8 @@ const retrieveActivityTable = async () => {
             dw.activity_log a
           LEFT JOIN dw.machines_list b ON a.machine_id = b.id
           LEFT JOIN dw.people c ON a.operator_id = c.id
+          WHERE
+            a.status = 'current'
           ORDER BY
             epoch_ms DESC;`,
   };
@@ -124,11 +127,77 @@ const populateActivityLog = async ({
 
   const query = {
     text: `INSERT INTO
-            dw.activity_log (epoch_ms,machine_id,operator_id,activity)
+            dw.activity_log (epoch_ms,machine_id,operator_id,activity,created_at)
           VALUES
-            ('${epochMilliSeconds}','${machineId}','${operatorId}','${activity}');`,
+            ('${epochMilliSeconds}','${machineId}','${operatorId}','${activity}',${Date.now()});`,
   };
 
+  try {
+    const res = await client.query(query);
+    console.log(res);
+    if (res.rowCount == 0) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error(err.detail);
+    return true;
+  } finally {
+    client.release();
+  }
+};
+
+const editActivityLog = async ({
+  epochMilliSeconds,
+  machineId,
+  operatorId,
+  activity,
+  pk,
+}) => {
+  const client = await pool.connect();
+
+  const query = {
+    text: `BEGIN;
+          UPDATE
+            dw.activity_log
+          SET
+            status = 'obsolete',
+            updated_at = ${Date.now()}
+          WHERE
+            pk = ${pk};
+          INSERT INTO
+            dw.activity_log (epoch_ms,machine_id,operator_id,activity,created_at,previous_record)
+          VALUES
+            ('${epochMilliSeconds}','${machineId}','${operatorId}','${activity}',${Date.now()},${pk});
+          COMMIT;`,
+  };
+  try {
+    const res = await client.query(query);
+    console.log(res);
+    if (res.rowCount == 0) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error(err.detail);
+    return true;
+  } finally {
+    client.release();
+  }
+};
+
+const deleteActivityLog = async ({ pk }) => {
+  const client = await pool.connect();
+
+  const query = {
+    text: `UPDATE
+            dw.activity_log
+          SET
+            status = 'obsolete',
+            updated_at = ${Date.now()}
+          WHERE
+            pk = ${pk};`,
+  };
   try {
     const res = await client.query(query);
     console.log(res);
@@ -149,4 +218,6 @@ module.exports = {
   retrieveOperatorsTable,
   retrieveActivityTable,
   populateActivityLog,
+  editActivityLog,
+  deleteActivityLog,
 };
