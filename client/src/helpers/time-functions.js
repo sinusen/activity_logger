@@ -23,7 +23,7 @@ function getSlashedDate(date = Date.now()) {
 }
 //Function to generate formatted time
 function getFormattedTime(date = Date.now()) {
-  const d = new Date(date);
+  const d = new Date(Number(date));
   let minutes = "" + d.getMinutes();
   let hours = "" + d.getHours();
 

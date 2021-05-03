@@ -80,7 +80,7 @@ class Form extends React.Component {
   componentDidUpdate(prevProps) {
     if (
       this.props.machinesList !== prevProps.machinesList &&
-      this.props.machinesList
+      this.props.machinesList.length > 0
     ) {
       this.updateMachineLocations();
     }
@@ -232,7 +232,11 @@ class Form extends React.Component {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary">
+          <button
+            type="submit"
+            id="activity-submit"
+            className="btn btn-primary"
+          >
             Submit
           </button>
         </div>

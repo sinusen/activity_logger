@@ -1,54 +1,64 @@
 import React from "react";
 import { getSlashedDate, getFormattedTime } from "../helpers/time-functions";
+import EdittableLogItem from "./EdittableLogItem";
 
 import "./TableDisplay.css";
 
-const TableDisplay = ({ activityData, editHandler, editSubmitHandler }) => {
+const TableDisplay = ({
+  activityData,
+  editButtonHandler,
+  deleteDataHandler,
+  cancelEditHandler,
+  editDataHandler,
+  machines,
+  operators,
+}) => {
   const renderTableRows = () => {
     if (activityData.length <= 0) {
       return null;
     }
     return activityData.map((row, index) => {
-      console.log(activityData);
       return (
         <React.Fragment key={row.pk}>
-          <tr>
-            <td contentEditable={row.editContent}>
-              {getSlashedDate(Number(row.epoch_ms))}
-            </td>
-            <td contentEditable={row.editContent}>
-              {getFormattedTime(Number(row.epoch_ms))}
-            </td>
-            <td>{row.machine_name}</td>
-            <td>{row.initials}</td>
-            <td>
-              {row.editContent ? (
-                <React.Fragment>
+          {row.editContent ? (
+            <EdittableLogItem
+              pk={row.pk}
+              epoch_ms={row.epoch_ms}
+              machine={row.machine_name}
+              operatorInitials={row.initials}
+              activity={row.activity}
+              machines={machines}
+              editDataHandler={editDataHandler}
+              cancelEditHandler={cancelEditHandler}
+              operators={operators}
+            />
+          ) : (
+            <React.Fragment>
+              <tr>
+                <td>{getSlashedDate(Number(row.epoch_ms))}</td>
+                <td>{getFormattedTime(Number(row.epoch_ms))}</td>
+                <td>{row.machine_name}</td>
+                <td>{row.initials}</td>
+                <td>
                   <button
-                    onClick={editSubmitHandler.bind(null, row.pk)}
-                    className="btn btn-primary btn-sm"
-                  >
-                    Submit
-                  </button>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <button
-                    onClick={editHandler.bind(null, row.pk)}
+                    onClick={editButtonHandler.bind(null, row.pk)}
                     className="edit-button-group btn btn-sm btn-warning"
                   >
                     Edit log
                   </button>
-                  <button className="btn btn-sm btn-danger">Delete log</button>
-                </React.Fragment>
-              )}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan="5" contentEditable={row.editContent}>
-              {row.activity}
-            </td>
-          </tr>
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={deleteDataHandler.bind(null, { pk: row.pk })}
+                  >
+                    Delete log
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="5">{row.activity}</td>
+              </tr>
+            </React.Fragment>
+          )}
         </React.Fragment>
       );
     });
