@@ -24,7 +24,7 @@ class App extends React.Component {
       tableDataError: false,
       activityData: [],
       postSuccessCount: 0,
-      machinesList: null,
+      machinesList: [],
       operatorsList: null,
     };
   }
@@ -65,10 +65,39 @@ class App extends React.Component {
       alert(response.data.message);
       if (!response.data.error) {
         this.setState({ postSuccessCount: this.state.postSuccessCount + 1 });
+        await this.fetchActivityLog();
       }
     } catch (err) {
       console.log(err);
       alert("Form submit error");
+    }
+  };
+
+  editData = async (data) => {
+    console.log(data);
+    try {
+      const response = await axios.post(`/activity-log/edit-data`, data);
+
+      alert(response.data.message);
+      if (!response.data.error) {
+        await this.fetchActivityLog();
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Data could not be edited. Please report the issue");
+    }
+  };
+  deleteData = async (data) => {
+    try {
+      const response = await axios.post(`/activity-log/delete-data`, data);
+
+      alert(response.data.message);
+      if (!response.data.error) {
+        await this.fetchActivityLog();
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Data could not be deleted. Please report the issue");
     }
   };
   renderForm() {
@@ -94,17 +123,27 @@ class App extends React.Component {
     }
     return (
       <div className="mt-3">
-        <ActivityDisplay activityData={this.state.activityData} />
+        <ActivityDisplay
+          activityData={this.state.activityData}
+          machines={this.state.machinesList}
+          operators={this.state.operatorsList}
+          editDataHandler={this.editData}
+          deleteDataHandler={this.deleteData}
+        />
       </div>
     );
   }
-  async componentDidMount() {
+  async fetchActivityLog() {
     const activityLog = await this.fetchOperationData("activity-logs");
     if (activityLog.error) {
       this.setState({ tableDataError: activityLog.error });
       return;
     }
     this.setState({ activityData: activityLog.data });
+  }
+  async componentDidMount() {
+    await this.fetchActivityLog();
+    await this.fetchDropdownData();
   }
   render() {
     return (

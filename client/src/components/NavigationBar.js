@@ -9,7 +9,7 @@ const NavigationBar = () => {
             Submit activity
           </Link>
         </li>
-        <li class="nav-item">
+        <li className="nav-item">
           <Link className="nav-link" to="/activitydisplay">
             Display activity
           </Link>

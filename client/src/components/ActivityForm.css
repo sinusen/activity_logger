@@ -1,4 +1,4 @@
 /* Styles for activity form submit button */
-.btn.btn-primary {
+.btn.btn-primary#activity-submit {
   margin-top: 2rem;
 }
