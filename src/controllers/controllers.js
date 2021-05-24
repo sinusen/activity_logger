@@ -1,4 +1,5 @@
 const dbQueries = require("../infrastructure/database-queries");
+const { dbSanitizer } = require("../utils/sanitizers");
 
 async function analyzeRetrieveResponse(dbFunction) {
   const { error, noData, data } = await dbFunction();
@@ -34,6 +35,9 @@ const getActivityLogs = async function (req, res, next) {
 
 const postActivityLog = async function (req, res, next) {
   console.log(req.body);
+
+  dbSanitizer(req.body);
+
   const error = await dbQueries.populateActivityLog(req.body);
 
   if (error) {
@@ -44,6 +48,10 @@ const postActivityLog = async function (req, res, next) {
 };
 
 const editActivityLog = async function (req, res, next) {
+  console.log(req.body);
+
+  dbSanitizer(req.body);
+
   const error = await dbQueries.editActivityLog(req.body);
 
   if (error) {
