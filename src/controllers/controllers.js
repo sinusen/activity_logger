@@ -1,5 +1,6 @@
 const dbQueries = require("../infrastructure/database-queries");
 const { dbSanitizer } = require("../utils/sanitizers");
+const { logData } = require("../utils/loggers.js");
 
 async function analyzeRetrieveResponse(dbFunction) {
   const { error, noData, data } = await dbFunction();
@@ -34,7 +35,7 @@ const getActivityLogs = async function (req, res, next) {
 };
 
 const postActivityLog = async function (req, res, next) {
-  console.log(req.body);
+  logData(req.body, "post activity");
 
   dbSanitizer(req.body);
 
@@ -48,7 +49,7 @@ const postActivityLog = async function (req, res, next) {
 };
 
 const editActivityLog = async function (req, res, next) {
-  console.log(req.body);
+  logData(req.body, "edit activity");
 
   dbSanitizer(req.body);
 
@@ -62,6 +63,8 @@ const editActivityLog = async function (req, res, next) {
 };
 
 const deleteActivityLog = async function (req, res, next) {
+  logData(req.body, "delete activity");
+
   const error = await dbQueries.deleteActivityLog(req.body);
 
   if (error) {

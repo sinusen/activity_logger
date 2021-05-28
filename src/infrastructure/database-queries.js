@@ -1,10 +1,9 @@
 //game-store.js - Store, retrieve and update game records in PostgreSQL database
 
 const pool = require("./db-clientpool");
+const { logError } = require("../utils/loggers.js");
 
 const retrieveMachinesTable = async () => {
-  const client = await pool.connect();
-
   const query = {
     text: `SELECT
             id,machine_name,machine_group,machine_location
@@ -15,6 +14,7 @@ const retrieveMachinesTable = async () => {
   };
 
   try {
+    const client = await pool.connect();
     const res = await client.query(query);
     if (res.rowCount == 0) {
       return {
@@ -29,20 +29,22 @@ const retrieveMachinesTable = async () => {
       data: res.rows,
     };
   } catch (err) {
-    console.error(err);
+    logError(err, "retirive machines");
     return {
       error: true,
       noData: null,
       data: null,
     };
   } finally {
-    client.release();
+    try {
+      client.release();
+    } catch (error) {
+      logError(error, "client release");
+    }
   }
 };
 
 const retrieveOperatorsTable = async () => {
-  const client = await pool.connect();
-
   const query = {
     text: `SELECT
               id,
@@ -57,6 +59,7 @@ const retrieveOperatorsTable = async () => {
   };
 
   try {
+    const client = await pool.connect();
     const res = await client.query(query);
     if (res.rowCount == 0) {
       return {
@@ -71,20 +74,22 @@ const retrieveOperatorsTable = async () => {
       data: res.rows,
     };
   } catch (err) {
-    console.error(err);
+    logError(err, "retrieve operators");
     return {
       error: true,
       noData: null,
       data: null,
     };
   } finally {
-    client.release();
+    try {
+      client.release();
+    } catch (error) {
+      logError(error, "client release");
+    }
   }
 };
 
 const retrieveActivityTable = async () => {
-  const client = await pool.connect();
-
   const query = {
     text: `SELECT
             pk,epoch_ms,machine_name,initials,activity
@@ -99,6 +104,7 @@ const retrieveActivityTable = async () => {
   };
 
   try {
+    const client = await pool.connect();
     const res = await client.query(query);
     return {
       error: false,
@@ -106,14 +112,18 @@ const retrieveActivityTable = async () => {
       data: res.rows,
     };
   } catch (err) {
-    console.error(err);
+    logError(err, "retrieve activity");
     return {
       error: true,
       noData: null,
       data: null,
     };
   } finally {
-    client.release();
+    try {
+      client.release();
+    } catch (error) {
+      logError(error, "client release");
+    }
   }
 };
 
@@ -123,27 +133,30 @@ const populateActivityLog = async ({
   operatorId,
   activity,
 }) => {
-  const client = await pool.connect();
+  try {
+    const client = await pool.connect();
 
-  const query = {
-    text: `INSERT INTO
+    const query = {
+      text: `INSERT INTO
             dw.activity_log (epoch_ms,machine_id,operator_id,activity,created_at)
           VALUES
             ('${epochMilliSeconds}','${machineId}','${operatorId}','${activity}',${Date.now()});`,
-  };
+    };
 
-  try {
     const res = await client.query(query);
-    console.log(res);
     if (res.rowCount == 0) {
       return true;
     }
     return false;
   } catch (err) {
-    console.error(err.detail);
+    logError(err, "populate activity");
     return true;
   } finally {
-    client.release();
+    try {
+      client.release();
+    } catch (error) {
+      logError(error, "client release");
+    }
   }
 };
 
@@ -154,8 +167,6 @@ const editActivityLog = async ({
   activity,
   pk,
 }) => {
-  const client = await pool.connect();
-
   const query = {
     text: `BEGIN;
           UPDATE
@@ -172,23 +183,25 @@ const editActivityLog = async ({
           COMMIT;`,
   };
   try {
+    const client = await pool.connect();
     const res = await client.query(query);
-    console.log(res);
     if (res.rowCount == 0) {
       return true;
     }
     return false;
   } catch (err) {
-    console.error(err.detail);
+    logError(err, "edit activity");
     return true;
   } finally {
-    client.release();
+    try {
+      client.release();
+    } catch (error) {
+      logError(error, "client release");
+    }
   }
 };
 
 const deleteActivityLog = async ({ pk }) => {
-  const client = await pool.connect();
-
   const query = {
     text: `UPDATE
             dw.activity_log
@@ -199,17 +212,21 @@ const deleteActivityLog = async ({ pk }) => {
             pk = ${pk};`,
   };
   try {
+    const client = await pool.connect();
     const res = await client.query(query);
-    console.log(res);
     if (res.rowCount == 0) {
       return true;
     }
     return false;
   } catch (err) {
-    console.error(err.detail);
+    logError(err, "delete activity");
     return true;
   } finally {
-    client.release();
+    try {
+      client.release();
+    } catch (error) {
+      logError(error, "client release");
+    }
   }
 };
 
