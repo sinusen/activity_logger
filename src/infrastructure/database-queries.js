@@ -12,35 +12,39 @@ const retrieveMachinesTable = async () => {
           ORDER BY
             machine_location,machine_group,machine_name;`,
   };
-
   try {
     const client = await pool.connect();
-    const res = await client.query(query);
-    if (res.rowCount == 0) {
+    try {
+      const res = await client.query(query);
+      if (res.rowCount == 0) {
+        return {
+          error: false,
+          noData: true,
+          data: null,
+        };
+      }
       return {
         error: false,
-        noData: true,
+        noData: false,
+        data: res.rows,
+      };
+    } catch (err) {
+      logError(err, "Retirive machines - query error");
+      return {
+        error: true,
+        noData: null,
         data: null,
       };
+    } finally {
+      client.release();
     }
-    return {
-      error: false,
-      noData: false,
-      data: res.rows,
-    };
   } catch (err) {
-    logError(err, "retirive machines");
+    logError(err, "Retirive machines - database connection error");
     return {
       error: true,
       noData: null,
       data: null,
     };
-  } finally {
-    try {
-      client.release();
-    } catch (error) {
-      logError(error, "client release");
-    }
   }
 };
 
@@ -57,35 +61,39 @@ const retrieveOperatorsTable = async () => {
             ORDER BY
               area,first_name;`,
   };
-
   try {
     const client = await pool.connect();
-    const res = await client.query(query);
-    if (res.rowCount == 0) {
+    try {
+      const res = await client.query(query);
+      if (res.rowCount == 0) {
+        return {
+          error: false,
+          noData: true,
+          data: null,
+        };
+      }
       return {
         error: false,
-        noData: true,
+        noData: false,
+        data: res.rows,
+      };
+    } catch (err) {
+      logError(err, "Retrieve operators - database query error");
+      return {
+        error: true,
+        noData: null,
         data: null,
       };
+    } finally {
+      client.release();
     }
-    return {
-      error: false,
-      noData: false,
-      data: res.rows,
-    };
   } catch (err) {
-    logError(err, "retrieve operators");
+    logError(err, "Retrieve operators - database connection error");
     return {
       error: true,
       noData: null,
       data: null,
     };
-  } finally {
-    try {
-      client.release();
-    } catch (error) {
-      logError(error, "client release");
-    }
   }
 };
 
@@ -102,28 +110,32 @@ const retrieveActivityTable = async () => {
           ORDER BY
             epoch_ms DESC;`,
   };
-
   try {
     const client = await pool.connect();
-    const res = await client.query(query);
-    return {
-      error: false,
-      noData: false,
-      data: res.rows,
-    };
+    try {
+      const res = await client.query(query);
+      return {
+        error: false,
+        noData: false,
+        data: res.rows,
+      };
+    } catch (err) {
+      logError(err, "Retrieve activity - database query error");
+      return {
+        error: true,
+        noData: null,
+        data: null,
+      };
+    } finally {
+      client.release();
+    }
   } catch (err) {
-    logError(err, "retrieve activity");
+    logError(err, "Retrieve activity - database connection error");
     return {
       error: true,
       noData: null,
       data: null,
     };
-  } finally {
-    try {
-      client.release();
-    } catch (error) {
-      logError(error, "client release");
-    }
   }
 };
 
@@ -133,30 +145,29 @@ const populateActivityLog = async ({
   operatorId,
   activity,
 }) => {
+  const query = {
+    text: `INSERT INTO
+          dw.activity_log (epoch_ms,machine_id,operator_id,activity,created_at)
+          VALUES
+          ('${epochMilliSeconds}','${machineId}','${operatorId}','${activity}',${Date.now()});`,
+  };
   try {
     const client = await pool.connect();
-
-    const query = {
-      text: `INSERT INTO
-            dw.activity_log (epoch_ms,machine_id,operator_id,activity,created_at)
-          VALUES
-            ('${epochMilliSeconds}','${machineId}','${operatorId}','${activity}',${Date.now()});`,
-    };
-
-    const res = await client.query(query);
-    if (res.rowCount == 0) {
-      return true;
-    }
-    return false;
-  } catch (err) {
-    logError(err, "populate activity");
-    return true;
-  } finally {
     try {
+      const res = await client.query(query);
+      if (res.rowCount == 0) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      logError(err, "Populate activity - database query error");
+      return true;
+    } finally {
       client.release();
-    } catch (error) {
-      logError(error, "client release");
     }
+  } catch (err) {
+    logError(err, "Populate activity - database connection error");
+    return true;
   }
 };
 
@@ -184,20 +195,21 @@ const editActivityLog = async ({
   };
   try {
     const client = await pool.connect();
-    const res = await client.query(query);
-    if (res.rowCount == 0) {
-      return true;
-    }
-    return false;
-  } catch (err) {
-    logError(err, "edit activity");
-    return true;
-  } finally {
     try {
+      const res = await client.query(query);
+      if (res.rowCount == 0) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      logError(err, "Edit activity - database query error");
+      return true;
+    } finally {
       client.release();
-    } catch (error) {
-      logError(error, "client release");
     }
+  } catch (err) {
+    logError(err, "Edit activity - database connection error");
+    return true;
   }
 };
 
@@ -213,20 +225,25 @@ const deleteActivityLog = async ({ pk }) => {
   };
   try {
     const client = await pool.connect();
-    const res = await client.query(query);
-    if (res.rowCount == 0) {
-      return true;
-    }
-    return false;
-  } catch (err) {
-    logError(err, "delete activity");
-    return true;
-  } finally {
     try {
-      client.release();
-    } catch (error) {
-      logError(error, "client release");
+      const res = await client.query(query);
+      if (res.rowCount == 0) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      logError(err, "Delete activity - database query error");
+      return true;
+    } finally {
+      try {
+        client.release();
+      } catch (error) {
+        logError(error, "client release");
+      }
     }
+  } catch (err) {
+    logError(err, "Delete activity - database connection error");
+    return true;
   }
 };
 
