@@ -235,11 +235,7 @@ const deleteActivityLog = async ({ pk }) => {
       logError(err, "Delete activity - database query error");
       return true;
     } finally {
-      try {
-        client.release();
-      } catch (error) {
-        logError(error, "client release");
-      }
+      client.release();
     }
   } catch (err) {
     logError(err, "Delete activity - database connection error");
