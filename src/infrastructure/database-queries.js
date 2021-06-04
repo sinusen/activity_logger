@@ -108,7 +108,7 @@ const retrieveActivityTable = async () => {
           WHERE
             a.status = 'current'
           ORDER BY
-            epoch_ms DESC;`,
+            epoch_ms DESC LIMIT 30;`,
   };
   try {
     const client = await pool.connect();
