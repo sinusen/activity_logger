@@ -2,3 +2,7 @@
   padding-top: 20px;
   padding-bottom: 30px;
 }
+.activity-logs {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
