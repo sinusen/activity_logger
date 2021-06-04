@@ -55,7 +55,9 @@ const TableDisplay = ({
                 </td>
               </tr>
               <tr>
-                <td colSpan="5">{row.activity}</td>
+                <td colSpan="5" className="activity-logs">
+                  {row.activity}
+                </td>
               </tr>
             </React.Fragment>
           )}
