@@ -1,15 +1,12 @@
-import "./App.css";
 import React from "react";
 import axios from "axios";
 import { instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
-import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import ActivityForm from "./components/ActivityForm";
-import ActivityDisplay from "./components/ActivityDisplay";
-import NavigationBar from "./components/NavigationBar";
+import ActivityForm from "./ActivityForm";
+import ActivityDisplay from "./ActivityDisplay";
 
-import { addYearstoCurrentDate } from "./helpers/time-functions";
+import { addYearstoCurrentDate } from "../helpers/time-functions";
 
 class App extends React.Component {
   static propTypes = {
@@ -25,7 +22,7 @@ class App extends React.Component {
       activityData: [],
       postSuccessCount: 0,
       machinesList: [],
-      operatorsList: null,
+      operatorsList: [],
     };
   }
 
@@ -64,7 +61,9 @@ class App extends React.Component {
 
       alert(response.data.message);
       if (!response.data.error) {
-        this.setState({ postSuccessCount: this.state.postSuccessCount + 1 });
+        this.setState(({ postSuccessCount }) => ({
+          postSuccessCount: postSuccessCount + 1,
+        }));
         await this.fetchActivityLog();
       }
     } catch (err) {
@@ -74,7 +73,6 @@ class App extends React.Component {
   };
 
   editData = async (data) => {
-    console.log(data);
     try {
       const response = await axios.post(`/activity-log/edit-data`, data);
 
@@ -100,39 +98,7 @@ class App extends React.Component {
       alert("Data could not be deleted. Please report the issue");
     }
   };
-  renderForm() {
-    if (this.state.formDataError) {
-      return "Error loading data";
-    }
-    return (
-      <div className="mt-3">
-        <ActivityForm
-          onFormMount={this.fetchDropdownData}
-          machinesList={this.state.machinesList}
-          operatorsList={this.state.operatorsList}
-          onFormSubmit={this.postFormData}
-          postSuccessCount={this.state.postSuccessCount}
-          loggedOperator={this.props.cookies.get("logger") || null}
-        />
-      </div>
-    );
-  }
-  renderTable() {
-    if (this.state.tableDataError) {
-      return "Error loading data";
-    }
-    return (
-      <div className="mt-3">
-        <ActivityDisplay
-          activityData={this.state.activityData}
-          machines={this.state.machinesList}
-          operators={this.state.operatorsList}
-          editDataHandler={this.editData}
-          deleteDataHandler={this.deleteData}
-        />
-      </div>
-    );
-  }
+
   async fetchActivityLog() {
     const activityLog = await this.fetchOperationData("activity-logs");
     if (activityLog.error) {
@@ -146,17 +112,38 @@ class App extends React.Component {
     await this.fetchDropdownData();
   }
   render() {
+    const {
+      machinesList,
+      operatorsList,
+      postSuccessCount,
+      activityData,
+      formDataError,
+      tableDataError,
+    } = this.state;
+    const {
+      displayToggle: { showActivityForm, showActivityDisplay },
+    } = this.props;
     return (
-      <div className="container">
-        <h1 className="text-center main-title">Activity Logger</h1>
-        <Router>
-          <NavigationBar />
-          <Route exact path="/">
-            {this.renderForm()}
-          </Route>
-          <Route path="/activitydisplay">{this.renderTable()}</Route>
-        </Router>
-      </div>
+      <React.Fragment>
+        <ActivityForm
+          isShown={showActivityForm}
+          isErrored={formDataError}
+          machinesList={machinesList}
+          operatorsList={operatorsList}
+          onFormSubmit={this.postFormData}
+          postSuccessCount={postSuccessCount}
+          loggedOperator={this.props.cookies.get("logger") || null}
+        />
+        <ActivityDisplay
+          isShown={showActivityDisplay}
+          isErrored={tableDataError}
+          activityData={activityData}
+          machines={machinesList}
+          operators={operatorsList}
+          editDataHandler={this.editData}
+          deleteDataHandler={this.deleteData}
+        />
+      </React.Fragment>
     );
   }
 }
