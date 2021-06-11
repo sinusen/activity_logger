@@ -58,6 +58,7 @@ const retrieveOperatorsTable = async () => {
               dw.people
             WHERE
               area::text[] && ARRAY['Team Leader','Manager','Maintenance']
+              and current_employee = true
             ORDER BY
               area,first_name;`,
   };
